@@ -4,40 +4,62 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Radio Maitino | Emisión Profesional</title>
-    <!-- Fuentes e Iconos que pediste -->
+    
+    <!-- Fuentes e Iconos -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-    <!-- Enlace a tu archivo de estilos -->
+    
+    <!-- Librería PeerJS para el directo -->
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+    
+    <!-- Conexión a tu archivo de estilos -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Banner de Noticias (Oculto por defecto, se activa por JS) -->
-    <div class="news-banner-container" id="news-container">
-        <div class="news-banner-text" id="news-text">Cargando últimas noticias...</div>
+    <div id="news-banner-container" class="news-banner-container">
+        <div class="news-banner-text" id="news-banner-text"></div>
+    </div>
+    
+    <header>
+        <div class="brand"><div class="tally-light" id="tally"></div>RADIO MAITINO</div>
+    </header>
+
+    <div class="studio-wrapper">
+        <div class="broadcast-card">
+            <div id="status-badge" class="status-badge">Radio Maitino</div>
+            <div class="album-art" id="art">
+                <img id="art-img" src="https://ia600602.us.archive.org/32/items/r-maitino-psd-1400.1400/r%20maitino%20psd%201400.1400.png" alt="Radio Maitino">
+                <canvas id="visualizer-canvas" width="140" height="60"></canvas>
+            </div>
+            <h2 id="main-title">Radio Maitino</h2>
+            <p class="subtitle" id="sub-title">Sintonizar</p>
+            <div class="clock-display" id="clock">--:--:--</div>
+            
+            <button class="pwr-btn" id="pwr-btn" onclick="toggleBroadcast()">
+                <i class="fas fa-power-off"></i>
+            </button>
+            
+            <div class="volume-control">
+                <i class="fas fa-volume-down fa-xs"></i>
+                <input type="range" min="0" max="1" step="0.01" value="0.9" oninput="userVolume = this.value; if(elLiveAudio && currentMode === 'ESTUDIO_LIVE') elLiveAudio.volume = this.value;">
+                <i class="fas fa-volume-up fa-xs"></i>
+            </div>
+        </div>
+
+        <div class="schedule-card">
+            <div class="schedule-title">Parrilla Horaria</div>
+            <div id="schedule-list"><div class="schedule-item">Sintonizando...</div></div>
+        </div>
     </div>
 
-    <!-- Reproductor de Radio -->
-    <div class="radio-player">
-        <div class="radio-header">
-            <h1>Radio Maitino</h1>
-            <p class="live-indicator"><span class="dot"></span> EN DIRECTO</p>
-        </div>
-        
-        <div class="track-info">
-            <h2 id="current-track">Conectando con el estudio...</h2>
-        </div>
+    <!-- Reproductores de audio ocultos -->
+    <audio id="deck-a" preload="metadata" playsinline></audio>
+    <audio id="deck-b" preload="metadata" playsinline></audio>
+    <audio id="external-live-audio" autoplay playsinline hidden></audio>
 
-        <!-- Reproductor de Audio (Oculto, lo controlamos con botones) -->
-        <audio id="audio-player" preload="auto"></audio>
-
-        <div class="controls">
-            <button id="play-btn" class="play-btn"><i class="fas fa-play"></i></button>
-        </div>
-    </div>
-
-    <!-- Enlace a tu archivo de lógica -->
+    <!-- Conexión a tu archivo de lógica (al final para que cargue mejor) -->
     <script src="script.js"></script>
 </body>
 </html>
