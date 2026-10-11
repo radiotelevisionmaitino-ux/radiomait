@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Radio Maitino | Emisión Profesional</title>
+    <!-- Fuentes e Iconos que pediste -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Enlace a tu archivo de estilos -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Banner de Noticias (Oculto por defecto, se activa por JS) -->
+    <div class="news-banner-container" id="news-container">
+        <div class="news-banner-text" id="news-text">Cargando últimas noticias...</div>
+    </div>
+
+    <!-- Reproductor de Radio -->
+    <div class="radio-player">
+        <div class="radio-header">
+            <h1>Radio Maitino</h1>
+            <p class="live-indicator"><span class="dot"></span> EN DIRECTO</p>
+        </div>
+        
+        <div class="track-info">
+            <h2 id="current-track">Conectando con el estudio...</h2>
+        </div>
+
+        <!-- Reproductor de Audio (Oculto, lo controlamos con botones) -->
+        <audio id="audio-player" preload="auto"></audio>
+
+        <div class="controls">
+            <button id="play-btn" class="play-btn"><i class="fas fa-play"></i></button>
+        </div>
+    </div>
+
+    <!-- Enlace a tu archivo de lógica -->
+    <script src="script.js"></script>
+</body>
+</html>
