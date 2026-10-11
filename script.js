@@ -13,8 +13,18 @@ let isDataLoaded = false, visStartTime = Date.now();
 let peerReceiver = null, externalLiveActive = false, dataConn = null;
 let elLiveAudio = document.getElementById('external-live-audio'); elLiveAudio.muted = true;
 
+// --- NUEVAS VARIABLES PARA EL STREAM INFINITO ---
+let audioCtx;
+let masterStreamDestination; 
+let virtualLiveStream;
+let nodeA, nodeB, nodeLive;
+// Para que WebAudio procese enlaces externos, necesitamos habilitar CORS en los reproductores
+deckA.crossOrigin = "anonymous";
+deckB.crossOrigin = "anonymous";
+elLiveAudio.crossOrigin = "anonymous";
+
 let library = { news: null, news30: null, news30_strict: null, chimes: null, weather: null, hours: {}, breaking: null, ads: [], jingles: [], spaces: [], promos: [], osr: [], filler: [], schedule: {0:[],1:[],2:[],3:[],4:[],5:[],6:[], special:[]} };
-let audioCtx, lastPipFired = -1, lastScheduleSec = -1, lastClockSec = -1;
+let lastPipFired = -1, lastScheduleSec = -1, lastClockSec = -1;
 
 const el = {
     clock: document.getElementById('clock'), title: document.getElementById('main-title'), sub: document.getElementById('sub-title'),
@@ -168,8 +178,35 @@ function processData(data) {
     }
 }
 
+// --- CREACIÓN DEL ENLACE DE STREAMING INFINITO ---
 function initAudio() {
-    if (!audioCtx) { audioCtx = new(window.AudioContext || window.webkitAudioContext)(); requestAnimationFrame(drawVisualizer); }
+    if (!audioCtx) { 
+        audioCtx = new(window.AudioContext || window.webkitAudioContext)(); 
+        
+        // 1. Creamos un destino de Streaming virtual (el "Falso MP3 infinito")
+        masterStreamDestination = audioCtx.createMediaStreamDestination();
+        
+        // 2. Conectamos los Decks físicos al AudioContext
+        nodeA = audioCtx.createMediaElementSource(deckA);
+        nodeB = audioCtx.createMediaElementSource(deckB);
+        nodeLive = audioCtx.createMediaElementSource(elLiveAudio);
+        
+        // 3. Enrutamos el audio al Stream Infinito
+        nodeA.connect(masterStreamDestination);
+        nodeB.connect(masterStreamDestination);
+        nodeLive.connect(masterStreamDestination);
+        
+        // 4. Enrutamos el audio a los altavoces del usuario
+        nodeA.connect(audioCtx.destination);
+        nodeB.connect(audioCtx.destination);
+        nodeLive.connect(audioCtx.destination);
+
+        // 5. Generamos el objeto de la Emisión Continua
+        virtualLiveStream = masterStreamDestination.stream;
+        console.log("📻 Stream Infinito Generado. Puedes acceder a él mediante la variable: virtualLiveStream");
+
+        requestAnimationFrame(drawVisualizer); 
+    }
     if (audioCtx.state === 'suspended') audioCtx.resume();
 }
 
@@ -195,6 +232,10 @@ function playPip(dur) {
     let t = audioCtx.currentTime;
     let osc = audioCtx.createOscillator(), pGain = audioCtx.createGain();
     osc.type = 'sine'; osc.frequency.value = 1000; osc.connect(pGain); pGain.connect(audioCtx.destination);
+    
+    // Conectar también los PIPS al stream virtual
+    if(masterStreamDestination) pGain.connect(masterStreamDestination);
+
     pGain.gain.setValueAtTime(0, t);
     pGain.gain.setValueAtTime(userVolume, t + 0.001);
     pGain.gain.setValueAtTime(userVolume, t + dur - 0.005);
