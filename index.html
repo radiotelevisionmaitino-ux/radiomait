@@ -59,7 +59,11 @@
     <audio id="deck-b" preload="metadata" playsinline></audio>
     <audio id="external-live-audio" autoplay playsinline hidden></audio>
 
-    <!-- Conexión a tu archivo de lógica (al final para que cargue mejor) -->
-    <script src="script.js"></script>
+    <!-- Carga de módulos del motor de Radio Maitino desde la carpeta 'script' -->
+    <script src="script/1-config.js"></script>
+    <script src="script/2-api.js"></script>
+    <script src="script/3-webrtc.js"></script>
+    <script src="script/4-audio.js"></script>
+    <script src="script/5-core.js"></script>
 </body>
 </html>
